@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.erlangga.smplayer"
+    android:versionName="0.0.0.1"
+    android:versionCode="0001"
+    android:installLocation="auto">
+
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        <!-- This is needed for isWiredHeadsetOn() to work in some cases. (bug?) -->
+        <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+        <!-- Playlist shortcuts -->
+        <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+        <application
+            android:allowBackup="true"
+            android:resizeableActivity="true"
+            android:icon="@mipmap/icon"
+            android:label="@string/app_name">
+
+            <meta-data
+                android:name="com.mirrorlink.android.rockscout.allow-offline-access"
+                android:value="true" />
+
+            <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="com.erlangga.smplayer.core.android.vanilla.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+                <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/provider_paths"/>
+            </provider>
+
+            <activity
+                android:name=".core.android.vanilla.FullPlaybackActivity"
+                android:launchMode="singleTask" />
+            <activity
+                android:name=".core.android.vanilla.LibraryActivity"
+                android:theme="@style/Library"
+                android:launchMode="singleTask">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <action android:name="android.intent.action.MUSIC_PLAYER" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                    <category android:name="android.intent.category.APP_MUSIC" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+
+                <meta-data
+                    android:name="android.app.shortcuts"
+                    android:resource="@xml/shortcuts"/>
+
+            </activity>
+            <activity
+                android:name=".core.android.vanilla.PlaylistActivity"
+                android:launchMode="singleTask" />
+            <activity
+                android:name=".core.android.vanilla.MiniPlaybackActivity"
+                android:theme="@style/PopupDialog"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance" />
+            <receiver
+                android:name=".core.android.vanilla.OneCellWidget"
+                android:label="SMPlayer 1x1">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/one_cell_widget" />
+            </receiver>
+            <receiver
+                android:name="core.android.vanilla.FourLongWidget"
+                android:label="SMPlayer 4x1 A">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/four_long_widget" />
+            </receiver>
+            <receiver
+                android:name=".core.android.vanilla.FourWhiteWidget"
+                android:label="SMPlayer 4x1 White">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/four_white_widget" />
+            </receiver>
+            <receiver
+                android:name=".core.android.vanilla.WidgetE"
+                android:label="SMPlayer 4x1 B">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/widget_e" />
+            </receiver>
+            <receiver
+                android:name=".core.android.vanilla.FourSquareWidget"
+                android:label="SMPlayer 2x2 A">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/four_square_widget" />
+            </receiver>
+            <receiver
+                android:name=".core.android.vanilla.WidgetD"
+                android:label="SMPlayer 2x2 B">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/widget_d" />
+            </receiver>
+            <receiver android:name=".core.android.vanilla.MediaButtonReceiver" >
+                <intent-filter android:priority="999">
+                    <action android:name="android.intent.action.MEDIA_BUTTON" />
+                </intent-filter>
+            </receiver>
+            <service android:name=".core.android.vanilla.PlaybackService">
+                <intent-filter>
+                    <action android:name="com.erlangga.smplayer.core.android.vanilla.action.PLAY" />
+                    <action android:name="com.erlangga.smplayer.core.android.vanilla.action.PAUSE" />
+                    <action android:name="com.erlangga.smplayer.core.android.vanilla.action.TOGGLE_PLAYBACK" />
+                    <action android:name="com.erlangga.smplayer.core.android.vanilla.action.NEXT_SONG" />
+                    <action android:name="com.erlangga.smplayer.core.android.vanilla.action.PREVIOUS_SONG" />
+                </intent-filter>
+            </service>
+
+            <service
+                android:name=".core.android.vanilla.MirrorLinkMediaBrowserService"
+                android:exported="true">
+                <intent-filter>
+                    <action android:name="android.media.browse.MediaBrowserService" />
+                </intent-filter>
+            </service>
+
+            <service
+                android:name=".core.android.vanilla.ScheduledLibraryUpdate"
+                android:permission="android.permission.BIND_JOB_SERVICE"
+                android:exported="true"/>
+
+            <activity
+                android:name=".core.android.vanilla.PreferencesActivity" />
+            <activity
+                android:name=".core.android.vanilla.TabOrderActivity" />
+            <activity
+                android:name=".core.android.vanilla.FilebrowserStartActivity" />
+            <activity
+                android:name=".core.android.vanilla.PlaylistObserverDirActivity" />
+            <activity
+                android:name=".core.android.vanilla.MediaFoldersSelectionActivity" />
+            <activity
+                android:name=".core.android.vanilla.PermissionRequestActivity"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+            <activity
+                android:name=".core.android.vanilla.ShortcutPseudoActivity"
+                android:theme="@android:style/Theme.Translucent.NoTitleBar">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN"/>
+                </intent-filter>
+            </activity>
+
+            <activity android:name=".core.android.vanilla.AudioPickerActivity" android:theme="@style/PopupDialog"
+                android:excludeFromRecents="true" android:exported="true" >
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <data android:scheme="file"/>
+                    <data android:mimeType="audio/*"/>
+                    <data android:mimeType="application/ogg"/>
+                    <data android:mimeType="application/x-ogg"/>
+                    <data android:mimeType="application/x-flac"/>
+                    <data android:mimeType="application/itunes"/>
+                </intent-filter>
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <data android:scheme="content"/>
+                    <data android:mimeType="audio/*"/>
+                    <data android:mimeType="application/ogg"/>
+                    <data android:mimeType="application/x-ogg"/>
+                    <data android:mimeType="application/x-flac"/>
+                    <data android:mimeType="application/itunes"/>
+                </intent-filter>
+            </activity>
+
+            <activity android:name=".core.android.vanilla.AudioSearchActivity" android:theme="@style/PopupDialog"
+                android:excludeFromRecents="true">
+                <intent-filter>
+                    <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </activity>
+
+
+
+            <meta-data
+                android:name="com.google.android.backup.api_key"
+                android:value="AEdPqrEAAAAIEViwBxSHCdBCOOat4Go_5gSxFU7PhRFjLTeRAw" />
+
+        </application>
+</manifest>
+
