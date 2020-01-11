@@ -247,7 +247,7 @@ public class PreferencesActivity extends PreferenceActivity
 			super.onCreate(savedInstanceState);
 
 			Activity activity = getActivity();
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/vanilla-music/vanilla-music.github.io/wiki"));
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ratwareid/SimpleMusicPlayer/"));
 			if (intent != null) {
 				startActivity(intent);
 			}
